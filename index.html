@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌸 Rosa · École Directe</title>
+
+<!-- POLICES -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&family=Noto+Serif+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@500&display=swap" rel="stylesheet">
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  :root {
+    --washi: #FAF6F0;
+    --washi-dark: #F0E5D8;
+    --sumi: #2E2A26;
+    --sakura-deep: #8B3A3A;
+    --sakura: #D4A5A5;
+    --sakura-light: #F5DCDC;
+    --bamboo: #7BA77B;
+    --tea: #C9A370;
+    --vermilion: #C97070;
+    --gold: #B89A4E;
+    --line: #E8D5C4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif JP', 'Sawarabi Mincho', serif;
+    background: var(--washi);
+    color: var(--sumi);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(212, 165, 165, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(123, 167, 123, 0.05) 0%, transparent 50%);
+  }
+
+  /* Pétales de sakura qui tombent */
+  .sakura-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .petale {
+    position: absolute;
+    top: -40px;
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(ellipse at 30% 30%, #FFD9D9, #D4A5A5);
+    border-radius: 0 100% 0 100%;
+    opacity: 0.7;
+    animation: tomber linear infinite;
+  }
+  @keyframes tomber {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 48px 20px 32px;
+    background: linear-gradient(180deg, rgba(245, 220, 220, 0.4) 0%, transparent 100%);
+  }
+  header .torii {
+    font-size: 36px;
+    color: var(--sakura-deep);
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 38px;
+    font-weight: 500;
+    letter-spacing: 12px;
+    color: var(--sakura-deep);
+    text-transform: uppercase;
+    text-indent: 12px;
+  }
+  header .kanji {
+    font-size: 14px;
+    color: var(--gold);
+    letter-spacing: 8px;
+    margin-top: 4px;
+  }
+  header .date {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #8a7a6e;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  header .ornement {
+    margin: 16px auto 0;
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--sakura-deep), transparent);
+    position: relative;
+  }
+  header .ornement::after {
+    content: '❀';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--washi);
+    padding: 0 8px;
+    color: var(--sakura-deep);
+    font-size: 14px;
+  }
+
+  /* NAV ONGLETS */
+  nav.tabs {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.4);
+    margin-bottom: 32px;
+  }
+  nav.tabs button {
+    background: transparent;
+    border: none;
+    padding: 16px 28px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    color: #8a7a6e;
+    cursor: pointer;
+    letter-spacing: 3px;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+    position: relative;
+  }
+  nav.tabs button .kanji {
+    display: block;
+    font-size: 10px;
+    color: var(--gold);
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+  nav.tabs button:hover { color: var(--sakura-deep); }
+  nav.tabs button.active {
+    color: var(--sakura-deep);
+    border-bottom-color: var(--sakura-deep);
+    font-weight: 500;
+  }
+
+  /* CONTENEUR */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .panel { display: none; animation: fadeIn 0.5s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* CARTES */
+  .card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(46, 42, 38, 0.04);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--sakura);
+  }
+  .card.urgent::before { background: var(--vermilion); }
+  .card.important::before { background: var(--tea); }
+  .card.fait { background: #F8F8F4; opacity: 0.6; }
+  .card.fait::before { background: var(--bamboo); }
+  .card.fait .contenu { text-decoration: line-through; color: #999; }
+
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .card-matiere {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--sakura-deep);
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    flex: 1;
+  }
+  .card-meta {
+    text-align: right;
+    font-size: 11px;
+    color: #999;
+    letter-spacing: 1px;
+  }
+  .card-date {
+    color: var(--sakura-deep);
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  .card .contenu {
+    color: #4a4138;
+    line-height: 1.7;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  /* CHECKBOX */
+  .check-fait {
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    border: 1.5px solid var(--sakura-deep);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+    background: white;
+    flex-shrink: 0;
+  }
+  .check-fait:hover { background: var(--sakura-light); }
+  .check-fait:checked { background: var(--bamboo); border-color: var(--bamboo); }
+  .check-fait:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  /* BADGES URGENCE */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .badge.urgent { background: #FCE5E5; color: var(--vermilion); border: 1px solid var(--vermilion); }
+  .badge.important { background: #FAF0E1; color: var(--tea); border: 1px solid var(--tea); }
+  .badge.normal { background: #EFF5EF; color: var(--bamboo); border: 1px solid var(--bamboo); }
+  .badge.demain { background: var(--sakura-deep); color: white; }
+
+  /* SECTION TITRE */
+  .section-titre {
+    display: flex;
+    align-items: center;
+    margin: 32px 0 16px;
+    gap: 16px;
+  }
+  .section-titre h2 {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--sakura-deep);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+  }
+  .section-titre .kanji {
+    color: var(--gold);
+    font-size: 14px;
+    letter-spacing: 4px;
+  }
+  .section-titre .ligne {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .section-titre.first { margin-top: 0; }
+
+  /* NOTES TABLE */
+  .note-card {
+    display: grid;
+    grid-template-columns: 100px 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 24px;
+    background: white;
+    border: 1px solid var(--line);
+    margin-bottom: 6px;
+    transition: all 0.2s;
+  }
+  .note-card:hover { background: #FFFCF8; }
+  .note-date { font-size: 12px; color: #999; letter-spacing: 1px; }
+  .note-matiere { font-family: 'Shippori Mincho', serif; color: var(--sumi); font-weight: 500; }
+  .note-devoir { font-size: 11px; color: #aaa; }
+  .note-valeur {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Shippori Mincho', serif;
+    letter-spacing: 1px;
+    min-width: 100px;
+    text-align: right;
+  }
+  .note-valeur.bonne { color: var(--bamboo); }
+  .note-valeur.moyenne { color: var(--tea); }
+  .note-valeur.basse { color: var(--vermilion); }
+  .note-comp {
+    font-size: 10px;
+    color: #999;
+    text-align: right;
+    line-height: 1.6;
+    min-width: 100px;
+  }
+
+  /* KPI */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .kpi {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 24px;
+    text-align: center;
+    position: relative;
+  }
+  .kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2px;
+    background: var(--sakura-deep);
+  }
+  .kpi-val {
+    font-size: 36px;
+    font-family: 'Shippori Mincho', serif;
+    color: var(--sakura-deep);
+    font-weight: 500;
+  }
+  .kpi-label {
+    font-size: 11px;
+    color: #8a7a6e;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .kpi-kanji {
+    font-size: 10px;
+    color: var(--gold);
+    margin-top: 4px;
+  }
+
+  /* CHART */
+  .chart-container {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .chart-container h3 {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--sakura-deep);
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: #aaa;
+    font-style: italic;
+    font-family: 'Sawarabi Mincho', serif;
+  }
+  .empty .kanji {
+    font-size: 64px;
+    color: var(--sakura-light);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 32px 20px;
+    color: #aaa;
+    font-size: 11px;
+    letter-spacing: 3px;
+    border-top: 1px solid var(--line);
+    margin-top: 60px;
+  }
+
+  /* LOADER */
+  #loader {
+    position: fixed;
+    inset: 0;
+    background: var(--washi);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 0.5s;
+  }
+  #loader.done { opacity: 0; pointer-events: none; }
+  .torii-loader {
+    font-size: 64px;
+    color: var(--sakura-deep);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+  }
+  #loader .txt {
+    margin-top: 20px;
+    color: var(--sakura-deep);
+    letter-spacing: 6px;
+    font-size: 14px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    header h1 { font-size: 24px; letter-spacing: 6px; }
+    nav.tabs button { padding: 12px 14px; font-size: 12px; letter-spacing: 2px; }
+    .note-card { grid-template-columns: 1fr auto; gap: 8px; }
+    .note-date, .note-comp { grid-column: 1 / -1; }
+  }
+
+  /* CONFIG WARNING */
+  .config-warn {
+    background: #FFF3CD;
+    border: 1px solid #FFE69C;
+    color: #856404;
+    padding: 16px;
+    margin: 16px 0;
+    text-align: center;
+    font-size: 13px;
+  }
+  .config-warn code { background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Décor pétales -->
+<div class="sakura-bg" id="sakuraBg"></div>
+
+<!-- Loader -->
+<div id="loader">
+  <div class="torii-loader">⛩</div>
+  <div class="txt">CHARGEMENT</div>
+</div>
+
+<header>
+  <div class="torii">⛩</div>
+  <h1>Rosa</h1>
+  <div class="kanji">ローザの宿題と成績</div>
+  <div class="ornement"></div>
+  <div class="date" id="dateJour"></div>
+</header>
+
+<nav class="tabs">
+  <button class="active" data-tab="devoirs">
+    <span class="kanji">宿題</span>DEVOIRS
+  </button>
+  <button data-tab="priorites">
+    <span class="kanji">優先</span>PRIORITÉS
+  </button>
+  <button data-tab="notes">
+    <span class="kanji">成績</span>NOTES
+  </button>
+</nav>
+
+<main>
+
+  <!-- Bandeau config si URL non remplacée -->
+  <div id="configWarn" class="config-warn" style="display:none;">
+    ⚠️ Configuration requise : remplace <code>APPS_SCRIPT_URL</code> en haut du fichier <code>index.html</code> par l'URL de ton Apps Script déployé.
+  </div>
+
+  <!-- ONGLET DEVOIRS -->
+  <section class="panel active" id="panel-devoirs">
+    <div class="kpi-grid" id="kpiDevoirs"></div>
+    <div id="devoirsListe"></div>
+  </section>
+
+  <!-- ONGLET PRIORITÉS -->
+  <section class="panel" id="panel-priorites">
+    <div id="prioritesListe"></div>
+  </section>
+
+  <!-- ONGLET NOTES -->
+  <section class="panel" id="panel-notes">
+    <div class="chart-container">
+      <h3>Moyennes par matière · 平均点</h3>
+      <canvas id="chartMoyennes" height="120"></canvas>
+    </div>
+    <div class="section-titre">
+      <h2>Dernières notes</h2>
+      <span class="kanji">最近の成績</span>
+      <span class="ligne"></span>
+    </div>
+    <div id="notesListe"></div>
+  </section>
+
+</main>
+
+<footer>
+  🌸 Mis à jour : <span id="lastUpdate">—</span> · 桜の花
+</footer>
+
+<script>
+/* ============================================================
+ * CONFIG — remplace l'URL après déploiement de l'Apps Script
+ * ============================================================ */
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyY-UjH5sWQGgWAzFrjq3LcuMgdIKnBx6gVf5QRfjOdKgbwXZACYL9DonPtnDJ2pHPR/exec";
+
+/* ============================================================
+ * PÉTALES DE SAKURA
+ * ============================================================ */
+function spawnPetales() {
+  const bg = document.getElementById('sakuraBg');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'petale';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (8 + Math.random() * 10) + 's';
+    p.style.animationDelay = (Math.random() * 12) + 's';
+    p.style.transform = `scale(${0.6 + Math.random() * 0.8})`;
+    p.style.opacity = 0.3 + Math.random() * 0.5;
+    bg.appendChild(p);
+  }
+}
+
+/* ============================================================
+ * DATE FR
+ * ============================================================ */
+function setDateJour() {
+  const d = new Date();
+  const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+  document.getElementById('dateJour').textContent = d.toLocaleDateString('fr-FR', opts);
+}
+
+/* ============================================================
+ * NAVIGATION ONGLETS
+ * ============================================================ */
+document.querySelectorAll('nav.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ============================================================
+ * LOAD DATA
+ * ============================================================ */
+let DATA = { devoirs: [], notes: [], priorites: { moyennes: [], priorites: [] } };
+
+async function loadData() {
+  if (APPS_SCRIPT_URL.includes('REMPLACE_MOI')) {
+    document.getElementById('configWarn').style.display = 'block';
+    document.getElementById('loader').classList.add('done');
+    renderEmptyAll();
+    return;
+  }
+  try {
+    const r = await fetch(APPS_SCRIPT_URL + '?action=all&t=' + Date.now());
+    DATA = await r.json();
+    if (DATA.error) throw new Error(DATA.error);
+    document.getElementById('lastUpdate').textContent = new Date(DATA.updated || Date.now()).toLocaleString('fr-FR');
+    render();
+  } catch (e) {
+    console.error(e);
+    document.querySelector('main').insertAdjacentHTML('afterbegin',
+      `<div class="config-warn">Erreur de chargement : ${e.message}</div>`);
+    renderEmptyAll();
+  } finally {
+    setTimeout(() => document.getElementById('loader').classList.add('done'), 300);
+  }
+}
+
+/* ============================================================
+ * RENDER
+ * ============================================================ */
+function render() {
+  renderDevoirs();
+  renderPriorites();
+  renderNotes();
+  renderChart();
+}
+
+function renderEmptyAll() {
+  ['devoirsListe', 'prioritesListe', 'notesListe'].forEach(id => {
+    document.getElementById(id).innerHTML =
+      `<div class="empty"><span class="kanji">空</span>Aucune donnée pour le moment</div>`;
+  });
+}
+
+/* ----- DEVOIRS ----- */
+function renderDevoirs() {
+  const liste = DATA.devoirs || [];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const demain = new Date(today); demain.setDate(demain.getDate() + 1);
+
+  // KPIs
+  const aFaire = liste.filter(d => !d.fait && new Date(d.date_remise) >= today);
+  const pourDemain = liste.filter(d => {
+    const dr = new Date(d.date_remise); dr.setHours(0,0,0,0);
+    return dr.getTime() === demain.getTime();
+  });
+  const faits = liste.filter(d => d.fait);
+  const enRetard = liste.filter(d => !d.fait && new Date(d.date_remise) < today);
+
+  document.getElementById('kpiDevoirs').innerHTML = `
+    <div class="kpi"><div class="kpi-val">${aFaire.length}</div><div class="kpi-label">À FAIRE</div><div class="kpi-kanji">残り</div></div>
+    <div class="kpi"><div class="kpi-val">${pourDemain.length}</div><div class="kpi-label">DEMAIN</div><div class="kpi-kanji">明日</div></div>
+    <div class="kpi"><div class="kpi-val">${faits.length}</div><div class="kpi-label">FAITS</div><div class="kpi-kanji">完了</div></div>
+    <div class="kpi"><div class="kpi-val" style="color:var(--vermilion)">${enRetard.length}</div><div class="kpi-label">EN RETARD</div><div class="kpi-kanji">遅刻</div></div>
+  `;
+
+  if (liste.length === 0) {
+    document.getElementById('devoirsListe').innerHTML =
+      `<div class="empty"><span class="kanji">空</span>Aucun devoir saisi</div>`;
+    return;
+  }
+
+  // Regrouper par date
+  const groupes = {};
+  liste.forEach(d => {
+    const k = d.date_remise || 'inconnue';
+    (groupes[k] = groupes[k] || []).push(d);
+  });
+
+  const keys = Object.keys(groupes).sort();
+  let html = '';
+  keys.forEach(dateStr => {
+    const dDate = new Date(dateStr);
+    const label = formatDateGroupe(dDate, today, demain);
+    html += `<div class="section-titre">
+               <h2>${label}</h2>
+               <span class="kanji">${kanjiDate(dDate)}</span>
+               <span class="ligne"></span>
+             </div>`;
+    groupes[dateStr].forEach(d => html += cardDevoir(d, today, demain));
+  });
+  document.getElementById('devoirsListe').innerHTML = html;
+
+  // Wire checkboxes
+  document.querySelectorAll('.check-fait').forEach(cb => {
+    cb.addEventListener('change', async (e) => {
+      const id = e.target.dataset.id;
+      const fait = e.target.checked;
+      const card = e.target.closest('.card');
+      card.classList.toggle('fait', fait);
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'toggle_fait', id: id, fait: fait })
+        });
+        // Mettre à jour DATA local
+        const d = DATA.devoirs.find(x => x.id === id);
+        if (d) d.fait = fait;
+        renderDevoirs();
+      } catch (err) {
+        alert('Erreur sauvegarde : ' + err.message);
+        e.target.checked = !fait;
+      }
+    });
+  });
+}
+
+function cardDevoir(d, today, demain) {
+  const dr = new Date(d.date_remise); dr.setHours(0,0,0,0);
+  const jours = Math.ceil((dr - today) / 86400000);
+  let cls = 'card';
+  if (d.fait) cls += ' fait';
+  else if (jours <= 0) cls += ' urgent';
+  else if (jours === 1) cls += ' important';
+
+  let badge = '';
+  if (!d.fait) {
+    if (jours < 0) badge = `<span class="badge urgent">EN RETARD</span>`;
+    else if (jours === 0) badge = `<span class="badge urgent">AUJOURD'HUI</span>`;
+    else if (jours === 1) badge = `<span class="badge demain">DEMAIN</span>`;
+    else if (jours <= 3) badge = `<span class="badge important">DANS ${jours}J</span>`;
+    else badge = `<span class="badge normal">DANS ${jours}J</span>`;
+  }
+
+  return `
+    <div class="card ${cls}">
+      <div class="card-head">
+        <input type="checkbox" class="check-fait" data-id="${d.id}" ${d.fait ? 'checked' : ''}>
+        <div style="flex:1">
+          <div class="card-matiere">${escapeHtml(d.matiere || '?')}</div>
+          ${badge}
+        </div>
+        <div class="card-meta">
+          <div class="card-date">${formatJour(dr)}</div>
+        </div>
+      </div>
+      <div class="contenu">${escapeHtml(d.contenu || '(aucun détail)')}</div>
+    </div>`;
+}
+
+function formatDateGroupe(d, today, demain) {
+  const t = d.getTime();
+  if (t === today.getTime()) return "AUJOURD'HUI";
+  if (t === demain.getTime()) return "DEMAIN";
+  if (t < today.getTime()) return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase() + ' (passé)';
+  return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+}
+function formatJour(d) { return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }); }
+function kanjiDate(d) {
+  const j = ['日', '月', '火', '水', '木', '金', '土'];
+  return j[d.getDay()] + '曜日';
+}
+
+/* ----- PRIORITÉS ----- */
+function renderPriorites() {
+  const prio = (DATA.priorites && DATA.priorites.priorites) || [];
+
+  if (prio.length === 0) {
+    document.getElementById('prioritesListe').innerHTML =
+      `<div class="empty"><span class="kanji">完</span>Tous les devoirs sont faits ! 素晴らしい !</div>`;
+    return;
+  }
+
+  const urgent = prio.filter(p => p.niveau === 'URGENT');
+  const important = prio.filter(p => p.niveau === 'IMPORTANT');
+  const normal = prio.filter(p => p.niveau === 'NORMAL');
+
+  let html = `
+    <div class="card" style="background: #FFF8F0; border-left: 3px solid var(--gold);">
+      <div class="card-matiere">📜 Analyse des priorités</div>
+      <div class="contenu">
+        Le tri tient compte de <b>l'urgence</b> (date de remise) et de tes <b>moyennes</b>
+        (les matières les plus faibles passent en premier).
+      </div>
+    </div>`;
+
+  if (urgent.length) {
+    html += sectionTitre('Urgent', '緊急');
+    urgent.forEach(p => html += cardPrio(p, 'urgent'));
+  }
+  if (important.length) {
+    html += sectionTitre('Important', '重要');
+    important.forEach(p => html += cardPrio(p, 'important'));
+  }
+  if (normal.length) {
+    html += sectionTitre('Normal', '普通');
+    normal.forEach(p => html += cardPrio(p, 'normal'));
+  }
+  document.getElementById('prioritesListe').innerHTML = html;
+}
+
+function sectionTitre(titre, kanji) {
+  return `<div class="section-titre">
+            <h2>${titre}</h2>
+            <span class="kanji">${kanji}</span>
+            <span class="ligne"></span>
+          </div>`;
+}
+
+function cardPrio(p, cls) {
+  const moy = p.moyenne_matiere !== null && p.moyenne_matiere !== undefined
+    ? `<span style="font-size:11px; color:#999;">moy: <b style="color:${moyCouleur(p.moyenne_matiere)}">${p.moyenne_matiere}/20</b></span>`
+    : '';
+  const jours = p.jours_restants;
+  let restant;
+  if (jours < 0) restant = `<span class="badge urgent">EN RETARD ${-jours}j</span>`;
+  else if (jours === 0) restant = `<span class="badge urgent">AUJOURD'HUI</span>`;
+  else if (jours === 1) restant = `<span class="badge demain">DEMAIN</span>`;
+  else restant = `<span class="badge ${cls}">DANS ${jours}j</span>`;
+
+  return `
+    <div class="card ${cls}">
+      <div class="card-head">
+        <div style="flex:1">
+          <div class="card-matiere">${escapeHtml(p.matiere)}</div>
+          ${restant} ${moy}
+        </div>
+        <div class="card-meta">
+          <div class="card-date">${formatJour(new Date(p.date_remise))}</div>
+        </div>
+      </div>
+      <div class="contenu">${escapeHtml(p.contenu || '')}</div>
+    </div>`;
+}
+
+function moyCouleur(m) { return m >= 14 ? 'var(--bamboo)' : m >= 10 ? 'var(--tea)' : 'var(--vermilion)'; }
+
+/* ----- NOTES ----- */
+function renderNotes() {
+  const notes = DATA.notes || [];
+  if (notes.length === 0) {
+    document.getElementById('notesListe').innerHTML =
+      `<div class="empty"><span class="kanji">空</span>Aucune note pour le moment</div>`;
+    return;
+  }
+  let html = '';
+  notes.slice(0, 60).forEach(n => {
+    const val = parseFloat(String(n.note).replace(',', '.'));
+    const sur = parseFloat(n.sur) || 20;
+    const ratio = !isNaN(val) ? (val / sur * 20) : null;
+    const cls = ratio === null ? '' : ratio >= 14 ? 'bonne' : ratio >= 10 ? 'moyenne' : 'basse';
+    const comp = n.moy_classe ? `Classe ${n.moy_classe}<br>Min ${n.min_classe} · Max ${n.max_classe}` : '';
+    html += `
+      <div class="note-card">
+        <div>
+          <div class="note-matiere">${escapeHtml(n.matiere)}</div>
+          <div class="note-devoir">${escapeHtml(n.devoir || '')}</div>
+        </div>
+        <div class="note-date">${formatJour(new Date(n.date))}</div>
+        <div class="note-valeur ${cls}">${n.note}<span style="font-size:11px; color:#bbb;">/${n.sur}</span></div>
+        <div class="note-comp">${comp}</div>
+      </div>`;
+  });
+  document.getElementById('notesListe').innerHTML = html;
+}
+
+/* ----- CHART ----- */
+function renderChart() {
+  const moy = (DATA.priorites && DATA.priorites.moyennes) || [];
+  const filtered = moy.filter(m => m.moyenne !== null);
+  if (filtered.length === 0) return;
+  const ctx = document.getElementById('chartMoyennes');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: filtered.map(m => m.matiere),
+      datasets: [{
+        label: 'Moyenne /20',
+        data: filtered.map(m => m.moyenne),
+        backgroundColor: filtered.map(m => m.moyenne >= 14 ? '#7BA77B' : m.moyenne >= 10 ? '#C9A370' : '#C97070'),
+        borderRadius: 2,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, max: 20, grid: { color: '#F0E5D8' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+/* ----- UTIL ----- */
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+}
+
+/* ============================================================
+ * INIT
+ * ============================================================ */
+spawnPetales();
+setDateJour();
+loadData();
+</script>
+
+</body>
+</html>

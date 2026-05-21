@@ -1,0 +1,6 @@
+# NE JAMAIS COMMIT — fichiers sensibles
+config.py
+.ed_session.json
+scraper.log
+__pycache__/
+*.pyc
