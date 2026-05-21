@@ -623,9 +623,30 @@ function renderEmptyAll() {
   });
 }
 
+/* ----- DEDUPLICATION ----- */
+function dedup(liste) {
+  // Regroupe par (date_remise, matiere) et garde la version sans "Ã" (UTF-8 cassé)
+  const groupes = {};
+  liste.forEach(d => {
+    const dateKey = d.date_remise ? String(d.date_remise).substring(0, 10) : '';
+    const key = `${dateKey}|${d.matiere || ''}`;
+    const hasMojibake = /Ã[©¨ªà¢ç]/.test(d.contenu || '');
+    if (!groupes[key]) {
+      groupes[key] = { entry: d, mojibake: hasMojibake };
+    } else if (groupes[key].mojibake && !hasMojibake) {
+      // Préfère la version propre
+      groupes[key] = { entry: d, mojibake: false };
+    } else if (groupes[key].entry.fait !== d.fait) {
+      // Si l'une est cochée, garde la cochée
+      if (d.fait) groupes[key] = { entry: d, mojibake: hasMojibake };
+    }
+  });
+  return Object.values(groupes).map(g => g.entry);
+}
+
 /* ----- DEVOIRS ----- */
 function renderDevoirs() {
-  const liste = DATA.devoirs || [];
+  const liste = dedup(DATA.devoirs || []);
   const today = new Date(); today.setHours(0,0,0,0);
   const demain = new Date(today); demain.setDate(demain.getDate() + 1);
 
@@ -745,7 +766,7 @@ function kanjiDate(d) {
 
 /* ----- PRIORITÉS ----- */
 function renderPriorites() {
-  const prio = (DATA.priorites && DATA.priorites.priorites) || [];
+  const prio = dedup((DATA.priorites && DATA.priorites.priorites) || []);
 
   if (prio.length === 0) {
     document.getElementById('prioritesListe').innerHTML =
