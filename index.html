@@ -1186,10 +1186,19 @@ function moyCouleur(m) { return m >= 14 ? 'var(--bamboo)' : m >= 10 ? 'var(--tea
 
 /* ----- NOTES ----- */
 function renderNotes() {
-  const notes = DATA.notes || [];
+  const allNotes = DATA.notes || [];
+  // 2ème semestre : à partir du 1er janvier de l'année civile en cours
+  const now = new Date();
+  const DEBUT_S2 = new Date(now.getFullYear(), 0, 1); // 1er janvier
+  const notes = allNotes.filter(n => {
+    if (!n.date) return false;
+    const d = new Date(n.date);
+    return !isNaN(d.getTime()) && d >= DEBUT_S2;
+  });
+
   if (notes.length === 0) {
     document.getElementById('notesListe').innerHTML =
-      `<div class="empty"><span class="kanji">空</span>Aucune note pour le moment</div>`;
+      `<div class="empty"><span class="kanji">空</span>Aucune note pour le 2ème semestre</div>`;
     return;
   }
 
@@ -1217,9 +1226,9 @@ function renderNotes() {
   const moyGenCls = moyGen === null ? '' : moyGen >= 14 ? 'bonne' : moyGen >= 10 ? 'moyenne' : 'basse';
 
   let html = `<div class="moy-generale">
-                <div class="moy-gen-label"><span class="kanji-gold">総合平均</span>MOYENNE GÉNÉRALE</div>
+                <div class="moy-gen-label"><span class="kanji-gold">第二学期</span>MOYENNE GÉNÉRALE · 2<sup>e</sup> SEMESTRE</div>
                 <div class="moy-gen-val ${moyGenCls}">${moyGen === null ? '—' : moyGen.toFixed(2)}<small>/20</small></div>
-                <div class="moy-gen-sub">${nbMat} matières · ${notes.length} notes</div>
+                <div class="moy-gen-sub">${nbMat} matières · ${notes.length} notes · depuis le 1<sup>er</sup> janvier</div>
               </div>`;
 
   // Trier matières : moyenne la plus basse en premier (à travailler)
