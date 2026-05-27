@@ -25,6 +25,7 @@
     --tea: #C9A370;
     --vermilion: #C97070;
     --gold: #B89A4E;
+    --gold-dark: #8B6F33;
     --line: #E8D5C4;
   }
 
@@ -295,7 +296,156 @@
   }
   .section-titre.first { margin-top: 0; }
 
-  /* NOTES TABLE */
+  /* NOTES - MOYENNE GENERALE */
+  .moy-generale {
+    background: linear-gradient(180deg, var(--sakura-light) 0%, var(--washi) 100%);
+    border: 2px solid var(--sakura-deep);
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(139, 58, 58, 0.1);
+    position: relative;
+  }
+  .moy-generale::before {
+    content: '❀';
+    position: absolute;
+    top: -16px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--washi);
+    color: var(--sakura-deep);
+    padding: 0 12px;
+    font-size: 20px;
+  }
+  .moy-gen-label {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 12px;
+    color: var(--sakura-deep);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .moy-gen-label .kanji-gold {
+    display: block;
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+  }
+  .moy-gen-val {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 72px;
+    font-weight: 500;
+    line-height: 1;
+    margin: 8px 0;
+    color: var(--sumi);
+  }
+  .moy-gen-val.bonne { color: var(--bamboo); }
+  .moy-gen-val.moyenne { color: var(--tea); }
+  .moy-gen-val.basse { color: var(--vermilion); }
+  .moy-gen-val small { font-size: 24px; color: #b0a294; font-weight: 400; }
+  .moy-gen-sub {
+    font-size: 11px;
+    color: #8a7a6e;
+    letter-spacing: 2px;
+    margin-top: 4px;
+    font-family: 'Sawarabi Mincho', serif;
+  }
+
+  /* NOTES - BLOCS MATIERE */
+  .matiere-bloc {
+    background: white;
+    border: 1px solid var(--line);
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(46, 42, 38, 0.04);
+    overflow: hidden;
+  }
+  .matiere-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 22px 4px;
+    border-bottom: none;
+  }
+  .matiere-titre {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--sakura-deep);
+    letter-spacing: 1.5px;
+  }
+  .matiere-moy {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  .matiere-moy.bonne { color: var(--bamboo); }
+  .matiere-moy.moyenne { color: var(--tea); }
+  .matiere-moy.basse { color: var(--vermilion); }
+  .matiere-moy small { font-size: 14px; color: #b0a294; font-weight: 400; }
+  .matiere-meta {
+    font-family: 'Sawarabi Mincho', serif;
+    font-size: 11px;
+    color: #b0a294;
+    padding: 0 22px 12px;
+    letter-spacing: 1px;
+  }
+  .matiere-notes {
+    background: var(--washi);
+    border-top: 1px solid var(--line);
+  }
+  .note-ligne {
+    display: grid;
+    grid-template-columns: 70px 1fr 90px;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 22px;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.15s;
+  }
+  .note-ligne:last-child { border-bottom: none; }
+  .note-ligne:hover { background: #fff9f0; }
+  .note-date-jp {
+    font-family: 'Sawarabi Mincho', serif;
+    font-size: 12px;
+    color: var(--sakura-deep);
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+  .note-devoir-jp {
+    font-family: 'Sawarabi Mincho', serif;
+    font-size: 13px;
+    color: var(--sumi);
+    line-height: 1.5;
+  }
+  .note-coef {
+    display: inline-block;
+    font-size: 10px;
+    color: var(--gold-dark);
+    background: rgba(184, 154, 78, 0.1);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+  .note-classe-info {
+    font-size: 10px;
+    color: #b0a294;
+    letter-spacing: 0.5px;
+  }
+  .note-valeur-jp {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 22px;
+    font-weight: 600;
+    text-align: right;
+    letter-spacing: 1px;
+  }
+  .note-valeur-jp.bonne { color: var(--bamboo); }
+  .note-valeur-jp.moyenne { color: var(--tea); }
+  .note-valeur-jp.basse { color: var(--vermilion); }
+  .note-valeur-jp small { font-size: 12px; color: #b0a294; font-weight: 400; }
+
+  /* NOTES TABLE (ancien, conservé pour compat) */
   .note-card {
     display: grid;
     grid-template-columns: 100px 1fr auto auto;
@@ -387,6 +537,91 @@
     text-transform: uppercase;
     margin-bottom: 16px;
     text-align: center;
+  }
+
+  /* EDT GRILLE JAPONAISE */
+  .edt-grid {
+    display: grid;
+    grid-template-columns: 60px repeat(6, 1fr);
+    gap: 2px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .edt-cell {
+    background: white;
+    padding: 4px;
+    min-height: 34px;
+    position: relative;
+    font-size: 11px;
+  }
+  .edt-cell.head {
+    background: var(--washi-dark);
+    color: var(--sakura-deep);
+    text-align: center;
+    padding: 8px 4px;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 500;
+  }
+  .edt-cell.head .ji-kanji {
+    font-size: 18px;
+    color: var(--gold);
+    margin-bottom: 2px;
+  }
+  .edt-cell.head .ji-date {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .edt-cell.head.today {
+    background: var(--sakura-light);
+    color: var(--sakura-deep);
+  }
+  .edt-cell.head.today .ji-kanji {
+    color: var(--sakura-deep);
+  }
+  .edt-cell.heure {
+    background: var(--washi);
+    color: #8a7a6e;
+    text-align: center;
+    padding: 6px 4px;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .edt-cell.today {
+    background: linear-gradient(180deg, #fff8f8 0%, var(--washi) 100%);
+  }
+  .cours-jp {
+    background: var(--washi);
+    border-left: 3px solid var(--sakura);
+    padding: 4px 6px;
+    margin-bottom: 2px;
+    font-family: 'Sawarabi Mincho', serif;
+  }
+  .cours-jp .cours-matiere {
+    color: var(--sumi);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .cours-jp .cours-heure {
+    color: #8a7a6e;
+    font-size: 9px;
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
+  .cours-jp .cours-salle {
+    color: var(--sakura-deep);
+    font-size: 10px;
+    font-weight: 500;
+    margin-top: 1px;
+  }
+  .cours-jp.annule {
+    background: #f5e8e8;
+    opacity: 0.5;
+    text-decoration: line-through;
   }
 
   /* EMPTY */
@@ -488,6 +723,9 @@
   <button class="active" data-tab="devoirs">
     <span class="kanji">宿題</span>DEVOIRS
   </button>
+  <button data-tab="agenda">
+    <span class="kanji">時間割</span>AGENDA
+  </button>
   <button data-tab="priorites">
     <span class="kanji">優先</span>PRIORITÉS
   </button>
@@ -507,6 +745,11 @@
   <section class="panel active" id="panel-devoirs">
     <div class="kpi-grid" id="kpiDevoirs"></div>
     <div id="devoirsListe"></div>
+  </section>
+
+  <!-- ONGLET AGENDA -->
+  <section class="panel" id="panel-agenda">
+    <div id="agendaSemaine"></div>
   </section>
 
   <!-- ONGLET PRIORITÉS -->
@@ -581,7 +824,7 @@ document.querySelectorAll('nav.tabs button').forEach(btn => {
 /* ============================================================
  * LOAD DATA
  * ============================================================ */
-let DATA = { devoirs: [], notes: [], priorites: { moyennes: [], priorites: [] } };
+let DATA = { devoirs: [], notes: [], edt: [], priorites: { moyennes: [], priorites: [] } };
 
 async function loadData() {
   if (APPS_SCRIPT_URL.includes('REMPLACE_MOI')) {
@@ -611,16 +854,119 @@ async function loadData() {
  * ============================================================ */
 function render() {
   renderDevoirs();
+  renderAgenda();
   renderPriorites();
   renderNotes();
   renderChart();
 }
 
 function renderEmptyAll() {
-  ['devoirsListe', 'prioritesListe', 'notesListe'].forEach(id => {
-    document.getElementById(id).innerHTML =
-      `<div class="empty"><span class="kanji">空</span>Aucune donnée pour le moment</div>`;
+  ['devoirsListe', 'prioritesListe', 'notesListe', 'agendaSemaine'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<div class="empty"><span class="kanji">空</span>Aucune donnée pour le moment</div>`;
   });
+}
+
+/* ----- AGENDA ----- */
+function renderAgenda() {
+  const edt = DATA.edt || [];
+  const container = document.getElementById('agendaSemaine');
+  if (edt.length === 0) {
+    container.innerHTML = `<div class="empty"><span class="kanji">空</span>Pas d'emploi du temps</div>`;
+    return;
+  }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dow = today.getDay() || 7;
+  const monday = new Date(today); monday.setDate(monday.getDate() - dow + 1);
+  const jours = [];
+  for (let i = 0; i < 6; i++) { const d = new Date(monday); d.setDate(d.getDate() + i); jours.push(d); }
+  const kanjisJours = ['月', '火', '水', '木', '金', '土']; // lun mar mer jeu ven sam
+
+  const coursParJour = {};
+  edt.forEach(c => {
+    if (!c.start) return;
+    const dStr = String(c.start).substring(0, 10);
+    if (!coursParJour[dStr]) coursParJour[dStr] = [];
+    coursParJour[dStr].push(c);
+  });
+  Object.values(coursParJour).forEach(arr => arr.sort((a,b) => String(a.start).localeCompare(String(b.start))));
+
+  const heures = [];
+  for (let h = 8; h <= 17; h++) heures.push(h);
+
+  let html = `<div class="section-titre">
+                <h2>Semaine du ${formatJour(monday)}</h2>
+                <span class="kanji">今週</span>
+                <span class="ligne"></span>
+              </div>`;
+  html += `<div class="edt-grid">`;
+  html += `<div class="edt-cell head">時</div>`;
+  jours.forEach((j, idx) => {
+    const isToday = j.getTime() === today.getTime();
+    const lbl = j.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit' });
+    html += `<div class="edt-cell head ${isToday?'today':''}"><div class="ji-kanji">${kanjisJours[idx]}</div><div class="ji-date">${lbl}</div></div>`;
+  });
+  heures.forEach(h => {
+    html += `<div class="edt-cell heure">${h}h</div>`;
+    jours.forEach(j => {
+      const isToday = j.getTime() === today.getTime();
+      const dStr = j.toISOString().substring(0, 10);
+      const courses = (coursParJour[dStr] || []).filter(c => {
+        const startH = parseInt(String(c.start).substring(11, 13), 10);
+        return startH === h;
+      });
+      let cellHtml = '';
+      courses.forEach(c => {
+        const startTime = String(c.start).substring(11, 16);
+        const endTime = String(c.end).substring(11, 16);
+        const annule = c.annule === 'Oui';
+        cellHtml += `<div class="cours-jp ${annule ? 'annule' : ''}" style="border-left-color:${pickAgendaColor(c.couleur)}">
+                       <div class="cours-matiere">${escapeHtml((c.matiere || '').substring(0, 22))}</div>
+                       <div class="cours-heure">${startTime}–${endTime}</div>
+                       ${c.salle ? `<div class="cours-salle">${escapeHtml(c.salle)}</div>` : ''}
+                     </div>`;
+      });
+      html += `<div class="edt-cell${isToday ? ' today' : ''}">${cellHtml}</div>`;
+    });
+  });
+  html += `</div>`;
+
+  // Aujourd'hui détaillé
+  const dStrToday = today.toISOString().substring(0, 10);
+  const aujourdhui = coursParJour[dStrToday] || [];
+  if (aujourdhui.length > 0) {
+    html += `<div class="section-titre">
+               <h2>Aujourd'hui</h2>
+               <span class="kanji">本日</span>
+               <span class="ligne"></span>
+             </div>`;
+    aujourdhui.forEach(c => {
+      const startTime = String(c.start).substring(11, 16);
+      const endTime = String(c.end).substring(11, 16);
+      const annule = c.annule === 'Oui';
+      const color = pickAgendaColor(c.couleur);
+      html += `<div class="card ${annule ? 'fait' : ''}" style="border-left:4px solid ${color}">
+                 <div class="card-head">
+                   <div style="flex:1">
+                     <div class="card-matiere">${escapeHtml(c.matiere || '')} ${annule ? '<span style="color:var(--vermilion); font-size:11px; letter-spacing:2px;">⚠ ANNULÉ</span>' : ''}</div>
+                     <div style="color:#8a7a6e; font-size:13px; margin-top:4px; font-family:'Sawarabi Mincho';">${c.prof || ''}${c.salle ? ' · 📍 ' + c.salle : ''}</div>
+                   </div>
+                   <div class="card-meta">
+                     <div class="card-date" style="font-size:13px;">${startTime}<br>${endTime}</div>
+                   </div>
+                 </div>
+               </div>`;
+    });
+  }
+  container.innerHTML = html;
+}
+function pickAgendaColor(c) {
+  if (!c) return 'var(--sakura-deep)';
+  // Palette pastel washi
+  const palette = ['#8B3A3A', '#7BA77B', '#C9A370', '#6B7B9C', '#B07C9C', '#A0856B', '#5C8A8A', '#C97070'];
+  let h = 0;
+  for (let i = 0; i < c.length; i++) h = (h*31 + c.charCodeAt(i)) | 0;
+  return palette[Math.abs(h) % palette.length];
 }
 
 /* ----- DEDUPLICATION ----- */
@@ -846,24 +1192,68 @@ function renderNotes() {
       `<div class="empty"><span class="kanji">空</span>Aucune note pour le moment</div>`;
     return;
   }
-  let html = '';
-  notes.slice(0, 60).forEach(n => {
+
+  // Grouper par matière + calculer moyenne pondérée par coef
+  const parMatiere = {};
+  notes.forEach(n => {
+    const m = n.matiere || '?';
+    if (!parMatiere[m]) parMatiere[m] = { notes: [], sumPts: 0, sumCoef: 0 };
+    parMatiere[m].notes.push(n);
     const val = parseFloat(String(n.note).replace(',', '.'));
     const sur = parseFloat(n.sur) || 20;
-    const ratio = !isNaN(val) ? (val / sur * 20) : null;
-    const cls = ratio === null ? '' : ratio >= 14 ? 'bonne' : ratio >= 10 ? 'moyenne' : 'basse';
-    const comp = n.moy_classe ? `Classe ${n.moy_classe}<br>Min ${n.min_classe} · Max ${n.max_classe}` : '';
-    html += `
-      <div class="note-card">
-        <div>
-          <div class="note-matiere">${escapeHtml(n.matiere)}</div>
-          <div class="note-devoir">${escapeHtml(n.devoir || '')}</div>
-        </div>
-        <div class="note-date">${formatJour(new Date(n.date))}</div>
-        <div class="note-valeur ${cls}">${n.note}<span style="font-size:11px; color:#bbb;">/${n.sur}</span></div>
-        <div class="note-comp">${comp}</div>
-      </div>`;
+    const coef = parseFloat(n.coef) || 1;
+    if (!isNaN(val) && sur > 0) {
+      parMatiere[m].sumPts += (val / sur * 20) * coef;
+      parMatiere[m].sumCoef += coef;
+    }
   });
+
+  // Moyenne générale (moyenne des moyennes par matière)
+  let total = 0, nbMat = 0;
+  Object.values(parMatiere).forEach(g => {
+    if (g.sumCoef > 0) { total += g.sumPts / g.sumCoef; nbMat++; }
+  });
+  const moyGen = nbMat > 0 ? (total / nbMat) : null;
+  const moyGenCls = moyGen === null ? '' : moyGen >= 14 ? 'bonne' : moyGen >= 10 ? 'moyenne' : 'basse';
+
+  let html = `<div class="moy-generale">
+                <div class="moy-gen-label"><span class="kanji-gold">総合平均</span>MOYENNE GÉNÉRALE</div>
+                <div class="moy-gen-val ${moyGenCls}">${moyGen === null ? '—' : moyGen.toFixed(2)}<small>/20</small></div>
+                <div class="moy-gen-sub">${nbMat} matières · ${notes.length} notes</div>
+              </div>`;
+
+  // Trier matières : moyenne la plus basse en premier (à travailler)
+  const matieres = Object.entries(parMatiere).map(([m, g]) => ({
+    matiere: m,
+    moyenne: g.sumCoef > 0 ? g.sumPts / g.sumCoef : null,
+    notes: g.notes.slice().sort((a, b) => new Date(b.date) - new Date(a.date)),
+  })).sort((a, b) => (a.moyenne ?? 99) - (b.moyenne ?? 99));
+
+  matieres.forEach(mat => {
+    const cls = mat.moyenne === null ? '' : mat.moyenne >= 14 ? 'bonne' : mat.moyenne >= 10 ? 'moyenne' : 'basse';
+    html += `<div class="matiere-bloc">
+               <div class="matiere-head">
+                 <div class="matiere-titre">${escapeHtml(mat.matiere)}</div>
+                 <div class="matiere-moy ${cls}">${mat.moyenne === null ? '—' : mat.moyenne.toFixed(2)}<small>/20</small></div>
+               </div>
+               <div class="matiere-meta">${mat.notes.length} note${mat.notes.length > 1 ? 's' : ''}</div>
+               <div class="matiere-notes">`;
+    mat.notes.forEach(n => {
+      const val = parseFloat(String(n.note).replace(',', '.'));
+      const sur = parseFloat(n.sur) || 20;
+      const ratio = !isNaN(val) ? (val / sur * 20) : null;
+      const nCls = ratio === null ? '' : ratio >= 14 ? 'bonne' : ratio >= 10 ? 'moyenne' : 'basse';
+      const comp = n.moy_classe ? `<span class="note-classe-info">classe ${n.moy_classe} · min ${n.min_classe} · max ${n.max_classe}</span>` : '';
+      const coefStr = (parseFloat(n.coef) || 1) !== 1 ? ` <span class="note-coef">×${n.coef}</span>` : '';
+      html += `<div class="note-ligne">
+                 <div class="note-date-jp">${formatJour(new Date(n.date))}</div>
+                 <div class="note-devoir-jp">${escapeHtml(n.devoir || '—')}${coefStr}${comp ? '<br>' + comp : ''}</div>
+                 <div class="note-valeur-jp ${nCls}">${n.note}<small>/${n.sur}</small></div>
+               </div>`;
+    });
+    html += `</div></div>`;
+  });
+
   document.getElementById('notesListe').innerHTML = html;
 }
 
